@@ -91,8 +91,8 @@ def QSOEID(Z, I, NoCov, T, I_0, R_0, bias_corr_const,tau_0):
     ZYHat=ZYTilde
 
     # Define the profile likelihood function
-    def ell( phi, k ):
-        global   bias_corr_const, R_0, tau_0
+    def ell( phi, k ,bias_corr_const):
+        global   R_0, tau_0
 
         # First part of the calculation
         ZYTilde[k - 1, :] = (np.log(EstR[0]) - phi[1] * np.log(R_0) - phi[0]) * (Z[0, :] - barZ[k - 1, :])
@@ -106,12 +106,12 @@ def QSOEID(Z, I, NoCov, T, I_0, R_0, bias_corr_const,tau_0):
         BetaTilde[k, :] = ZYTilde[k - 1, :] @ WTilde[k - 1]
        
         # Loop for updating YTilde
-        for i in range(tau_0 + 1, k):
+        for i in range(tau_0 , k):
             YTilde[0, i] = phi[0] + phi[1] * np.log(EstR[i - 1]) + Z[i, :].T @ BetaTilde[k, :]
 
         # Calculating the result
         result = 0
-        for j in range(tau_0 + 1, k):
+        for j in range(tau_0 , k):
             result += I[j] * YTilde[0,j] - bias_corr_const * np.exp(YTilde[0,j]) * Lambda[j]
 
         return -result
@@ -121,7 +121,7 @@ def QSOEID(Z, I, NoCov, T, I_0, R_0, bias_corr_const,tau_0):
     # Minimize over the minus profile log-likelihood
     for t in range(tau_0 , T):
         
-        EstPhi[t, :] = fmin(func=ell, x0=[0.05, 0.7], args=(t, bias_corr_const), maxiter=5000, maxfun=5000)
+        EstPhi[t, :] = fmin(func=ell, x0=[0.05, 0.7], args=(t, bias_corr_const), maxiter=500, maxfun=500)
 
         ZYHat[t - 1, :] = (np.log(EstR[0]) - EstPhi[t, 1] * np.log(R_0) - EstPhi[t, 0]) * (Z[0, :] - barZ[t - 1, :])
         for i in range(1, t - 1):
@@ -163,28 +163,26 @@ def perform_estimation_and_plot(df, file_suffix):
     plt.xlabel('Time')
     plt.ylabel('R')
     plt.legend()
-
-    # Save the plot to a file
-    plt.savefig(f'R_comparison_{file_suffix}.png')
-
-    # Show the plot
-    plt.show()
-
     results_folder = "Results_Origin"
 
     # Create the Results folder if it doesn't exist
     if not os.path.exists(results_folder):
         os.makedirs(results_folder)
+    # Save the plot to a file
+    plt.savefig(os.path.join(results_folder, f'R_comparison_{file_suffix}.png'))
+
+    # Show the plot
+    plt.show()
+
+    
 
     # Save EstPhi, EstBeta, EstR to Results folder
     np.savetxt(os.path.join(results_folder, f"EstPhi_{file_suffix}.csv"), EstPhi, delimiter=",")
     np.savetxt(os.path.join(results_folder, f"EstBeta_{file_suffix}.csv"), EstBeta, delimiter=",")
     np.savetxt(os.path.join(results_folder, f"EstR_{file_suffix}.csv"), EstR, delimiter=",")
-    np.savetxt(f"EstPhi_{file_suffix}.csv", EstPhi, delimiter=",")
-    np.savetxt(f"EstBeta_{file_suffix}.csv", EstBeta, delimiter=",")
-    np.savetxt(f"EstR_{file_suffix}.csv", EstR, delimiter=",")
+   
 
 # Save df,df1,df2 to Results folder
-perform_estimation_and_plot(df,os.path.join(results_folder, "df"))
-perform_estimation_and_plot(df1, os.path.join(results_folder, "df1"))
-perform_estimation_and_plot(df2,os.path.join(results_folder, "df2"))
+perform_estimation_and_plot(df, 'df')
+perform_estimation_and_plot(df1, 'df1')
+perform_estimation_and_plot(df2, 'df2')
