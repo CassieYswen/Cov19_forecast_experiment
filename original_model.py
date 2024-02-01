@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from numpy.linalg import inv
 import pandas as pd
 from scipy.stats import gamma
-from scipy.optimize import fmin
+from scipy.optimize import fmin_slsqp,minimize
 import warnings
 from create_data import generate_data_true, generate_data_more_var, generate_data_ar2,cumulative_gamma
 import os
@@ -95,33 +95,40 @@ def QSOEID(Z, I, NoCov, T, I_0, R_0, bias_corr_const,tau_0):
         global    R_0, tau_0
 
         # First part of the calculation
-        ZYTilde[k - 1, :] = (np.log(EstR[0]) - phi[1] * np.log(R_0) - phi[0]) * (Z[0, :] - barZ[k - 1, :])
+        ZYTilde[k-2 , :] = (np.log(EstR[0]) - phi[1] * np.log(R_0) - phi[0]) * (Z[0, :] - barZ[k-2 , :])
         EstR[0] = np.exp(phi[0] + phi[1] * np.log(R_0))
 
         # Loop for updating ZYTilde
-        for i in range(1, k - 1):
-            ZYTilde[k - 1, :] += (np.log(EstR[i]) - phi[1] * np.log(EstR[i - 1]) - phi[0]) * (Z[i, :] - barZ[k - 1, :])
+        for i in range(1, k -2):
+            ZYTilde[k -2, :] += (np.log(EstR[i]) - phi[1] * np.log(EstR[i]) - phi[0]) * (Z[i, :] - barZ[k -2, :])
 
         # Updating BetaTilde
-        BetaTilde[k, :] = ZYTilde[k - 1, :] @ WTilde[k - 1]
+        BetaTilde[k-1, :] = ZYTilde[k - 2, :] @ WTilde[k - 2]
        
         # Loop for updating YTilde
-        for i in range(tau_0 , k):
-            YTilde[0, i] = phi[0] + phi[1] * np.log(EstR[i - 1]) + Z[i, :].T @ BetaTilde[k, :]
+        for i in range(tau_0 , k-1):
+            YTilde[0, i] = phi[0] + phi[1] * np.log(EstR[i - 1]) + Z[i, :].T @ BetaTilde[k-1, :]
 
         # Calculating the result
         result = 0
-        for j in range(tau_0 , k):
+        for j in range(tau_0 , k-1):
             result += I[j] * YTilde[0,j] - bias_corr_const * np.exp(YTilde[0,j]) * Lambda[j]
 
         return -result
     
-   
+        
     
     # Minimize over the minus profile log-likelihood
     for t in range(tau_0 , T):
-        
-        EstPhi[t, :] = fmin(func=ell, x0=[0.05, 0.7], args=(t, bias_corr_const), maxiter=50, maxfun=50)
+        bounds =[(-5,5), (0.3, 0.95)]
+        # Initial guess
+        x0 = [0.05, 0.7]
+        #EstPhi[t, :] = fmin_slsqp(func=ell, x0=x0, bounds=bounds, args=(t, bias_corr_const), iter=500)
+        # Using 'minimize' with method 'L-BFGS-B'
+        result = minimize(fun=ell, x0=x0, args=(t, bias_corr_const), method='L-BFGS-B', bounds=bounds, options={'maxiter': 50, 'maxfun': 50})
+
+        # Assigning the optimized parameters to EstPhi
+        EstPhi[t, :] = result.x
 
         ZYHat[t - 1, :] = (np.log(EstR[0]) - EstPhi[t, 1] * np.log(R_0) - EstPhi[t, 0]) * (Z[0, :] - barZ[t - 1, :])
         for i in range(1, t - 1):
