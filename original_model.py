@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from numpy.linalg import inv
 import pandas as pd
 from scipy.stats import gamma
-from scipy.optimize import fmin
+from scipy.optimize import minimize
 import warnings
 from create_data import generate_data_true, generate_data_more_var, generate_data_ar2,cumulative_gamma
 import os
@@ -91,8 +91,8 @@ def QSOEID(Z, I, NoCov, T, I_0, R_0, bias_corr_const,tau_0):
     ZYHat=ZYTilde
 
     # Define the profile likelihood function
-    def ell( phi, k ):
-        global   bias_corr_const, R_0, tau_0
+    def ell( phi, k ,bias_corr_const):
+        global    R_0, tau_0
 
         # First part of the calculation
         ZYTilde[k - 1, :] = (np.log(EstR[0]) - phi[1] * np.log(R_0) - phi[0]) * (Z[0, :] - barZ[k - 1, :])
@@ -116,11 +116,46 @@ def QSOEID(Z, I, NoCov, T, I_0, R_0, bias_corr_const,tau_0):
 
         return -result
     
-    
-    for t in range(tau_0 , T):
-        
-        EstPhi[t, :] = fmin(func=ell, x0=[0.05, 0.7], args=(t, bias_corr_const), maxiter=500, maxfun=500)
+    # def scaled_ell(scaled_params, *args):
+    #     # Scale back the parameters before passing them to the original objective function
+    #     original_params = scaled_params / np.array([100, 2])
+    #     return ell(original_params, *args)
 
+    # # Initial guesses and bounds
+    # initial_guesses = np.array([0.05, 0.7])
+    # bounds =[(-5, 5), (0.3, 0.95)]
+
+    # # Apply scaling
+    # scaled_initial_guesses = initial_guesses * np.array([100, 2])
+    # scaled_bounds = [(b[0] * scale, b[1] * scale) for b, scale in zip(bounds, [100, 2])]
+
+    # Minimize over the minus profile log-likelihood
+    for t in range(tau_0 + 1, T):
+        #Minimize the minus profile log-likelihood
+        #result = minimize(lambda phi: ell(phi, t, EstR), [0.05, 0.7], bounds=[(-5, 5), (0.3, 0.95)])
+        try:
+            result = minimize(ell, np.array([0.05, 0.7]), args=(t,),method='nelder-mead', bounds=[(-5, 5), (0.3, 0.95)], options={'maxiter': 1000}
+)
+
+            if result.success:
+                EstPhi[t, :] = result.x
+                # Update logic
+            else:
+                print(f"Minimization failed at t={t} with message: {result.message}")
+        except Exception as e:
+            print(f"Exception at t={t}: {e}")
+        # try:
+        #     result = minimize(scaled_ell, scaled_initial_guesses, args=(t, ), method='TNC', bounds=scaled_bounds)
+
+        #     if result.success:
+        #         # Revert scaling in the result
+        #         EstPhi[t, :] = result.x / np.array([100, 2])
+        #     else:
+        #         print(f"Minimization failed at t={t} with message: {result.message}")
+        # except Exception as e:
+        #     print(f"Exception at t={t}: {e}")
+
+        # Update ZYHat
         ZYHat[t - 1, :] = (np.log(EstR[0]) - EstPhi[t, 1] * np.log(R_0) - EstPhi[t, 0]) * (Z[0, :] - barZ[t - 1, :])
         for i in range(1, t - 1):
             ZYHat[t - 1, :] += (np.log(EstR[i]) - EstPhi[t, 1] * np.log(EstR[i - 1]) - EstPhi[t, 0]) * (Z[i, :] - barZ[t - 1, :])
@@ -162,25 +197,20 @@ def perform_estimation_and_plot(df, file_suffix):
     plt.ylabel('R')
     plt.legend()
 
+    results_folder = "Results_Origin"
+
     # Save the plot to a file
-    plt.savefig(f'R_comparison_{file_suffix}.png')
+    plt.savefig(os.path.join(results_folder,f'R_comparison_{file_suffix}.png'))
 
     # Show the plot
     plt.show()
 
-    results_folder = "results_original"  # Specify the folder name
+    # Saving EstPhi, EstBeta, EstR to files
+    np.savetxt(f"EstPhi_{file_suffix}.csv", EstPhi, delimiter=",")
+    np.savetxt(f"EstBeta_{file_suffix}.csv", EstBeta, delimiter=",")
+    np.savetxt(f"EstR_{file_suffix}.csv", EstR, delimiter=",")
 
-    # Create the Results folder if it doesn't exist
-    if not os.path.exists(results_folder):
-        os.makedirs(results_folder)
-
-    # Save EstPhi, EstBeta, EstR to Results folder
-    np.savetxt(os.path.join(results_folder, f"EstPhi_{file_suffix}.csv"), EstPhi, delimiter=",")
-    np.savetxt(os.path.join(results_folder, f"EstBeta_{file_suffix}.csv"), EstBeta, delimiter=",")
-    np.savetxt(os.path.join(results_folder, f"EstR_{file_suffix}.csv"), EstR, delimiter=",")
-   
-
-# Save df, df1, df2 to Results folder
-df.to_csv(os.path.join(results_folder, "df.csv"), index=False)
-df1.to_csv(os.path.join(results_folder, "df1.csv"), index=False)
-df2.to_csv(os.path.join(results_folder, "df2.csv"), index=False)
+# Assuming df1 and df2 are your DataFrames
+perform_estimation_and_plot(df, 'df')
+perform_estimation_and_plot(df1, 'df1')
+perform_estimation_and_plot(df2, 'df2')
