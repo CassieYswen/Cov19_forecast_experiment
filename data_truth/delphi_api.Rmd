@@ -1,0 +1,70 @@
+---
+title: "Covid_data_delphi"
+author: "Yansong Wen"
+date: "2024-02-21"
+output: html_document
+---
+
+```{r}
+#load pacakges'
+library(covidcast)
+library(dplyr)
+library(tidyr)
+library(EpiEstim)
+```
+
+```{r}
+#pull api data
+start_day <- "2020-5-7"
+end_day <- "2023-2-20"
+
+#"2021-04-12" "2023-02-15"
+cpr_s<-covidcast_signal(data_source = "dsew-cpr", signal = "people_full_vaccinated",
+                                  start_day = start_day, end_day = end_day,
+                                  geo_type = "county")
+
+fb_s <- covidcast_signals(data_source = "fb-survey",
+                          #"2021-02-09" "2022-06-25"
+                           signal = c("smoothed_wwearing_mask_7d",                                             #"2021-05-20" "2022-06-25"          "smoothed_wcovid_vaccinated_appointment_or_accept",
+                                      #"2021-06-04" "2022-06-25"
+                                        "smoothed_wothers_distanced_public",
+                                      #"2020-05-07" "2022-06-25"
+                                        "smoothed_wcli",
+                                      #"2020-05-07" "2022-06-25"
+                                        "smoothed_whh_cmnty_cli"),
+                             start_day = start_day, end_day = end_day,
+                             geo_type = "county")
+
+#"2020-05-07" "2022-01-20"
+google_s <- covidcast_signal(data_source = "google-symptoms", signal = "sum_anosmia_ageusia_smoothed_search",
+                                  start_day = start_day, end_day = end_day,
+                                  geo_type = "county")
+#"2020-05-07" "2023-02-20"
+doctor_s <- covidcast_signal(data_source = "doctor-visits", signal = "smoothed_adj_cli",
+                                  start_day = start_day, end_day = end_day,
+                                 geo_type = "county")
+
+#"2020-05-07" "2023-02-20"
+inc_s<-covidcast_signal(data_source = "jhu-csse", signal = "confirmed_7dav_incidence_num",
+                        start_day = start_day, end_day = end_day,
+                        geo_type = "county")
+
+```
+```{r}
+#clean data and bind signals
+cpr_s_l<-aggregate_signals(cpr_s) %>%
+  covidcast_longer()
+fb_s_l<-aggregate_signals(fb_s) %>%
+  covidcast_longer() 
+google_s_l<-aggregate_signals(google_s) %>%
+  covidcast_longer() 
+doctor_s_l<-aggregate_signals(doctor_s) %>%
+  covidcast_longer() 
+inc_s_l<-aggregate_signals(inc_s) %>%
+  covidcast_longer() 
+
+dat_all<-rbind(cpr_s_l,fb_s_l,google_s_l,doctor_s_l,inc_s_l)%>%
+  select(-c(data_source,dt))%>%
+  pivot_wider(names_from = signal, values_from = value)
+```
+
