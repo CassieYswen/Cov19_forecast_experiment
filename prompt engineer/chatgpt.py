@@ -1,6 +1,7 @@
 #import openai
 import os
 import openai
+from openai import OpenAI
 
 #set api key as environment variable
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -9,10 +10,10 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 #print(f"Secret key: {openai.api_key}")
 
 #openai.base_url = "https://..."
-openai.default_headers = {"x-foo": "true"}
+client = OpenAI(api_key=openai.api_key)
 # Define a function to call the OpenAI GPT-4 API
 def ask_gpt(prompt, temperature):
-     completion = openai.chat.completions.create(
+     completion = client.chat.completions.create(
             model="gpt-4",
             messages=[
                 {
@@ -22,7 +23,7 @@ def ask_gpt(prompt, temperature):
             ],
             temperature=temperature,  # Setting the temperature
         )
-     return completion.choices[0].message['content']
+     return completion.choices[0].message.content
 
 text = f"""
 You should express what you want a model to do by \ 
