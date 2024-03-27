@@ -1,0 +1,324 @@
+
+Based on the daily reported COVID-19 cases by county and the report example, as provided in the CSV data, generate a comprehensive report. 
+The report should analyze the disease trajectory, identify trends, and offer policy recommendations tailored to counties based on their case counts. 
+Consider factors such as rate of infection, comparison with state and national trends, and healthcare capacity.
+
+The report should be structured with headings and subheadings, including an executive summary, analysis section, and a conclusion with policy recommendations. 
+It should be detailed and not shorter than 2000 words to cover the necessary breadth and depth.
+
+Here is the summarized CSV data:
+```County with FIPS 1073 on 2020-03-19 had a reproduction number (R) of 3.60650684859203, 9.0 incident cases (true data).
+County with FIPS 1073 on 2020-03-20 had a reproduction number (R) of 2.87062144081197, 16.0 incident cases (true data).
+County with FIPS 1073 on 2020-03-21 had a reproduction number (R) of 2.64660845434878, 11.0 incident cases (true data).
+County with FIPS 1073 on 2020-03-22 had a reproduction number (R) of 1.8739590678592, 10.0 incident cases (true data).
+County with FIPS 1073 on 2020-03-23 had a reproduction number (R) of 3.09462281967931, 15.0 incident cases (true data).
+County with FIPS 1073 on 2020-03-24 had a reproduction number (R) of 3.8759076080138, 5.0 incident cases (true data).
+County with FIPS 1073 on 2020-03-25 had a reproduction number (R) of 3.61808504213127, 38.0 incident cases (true data).
+County with FIPS 1073 on 2020-03-26 had a reproduction number (R) of 2.98728328585967, 40.0 incident cases (true data).
+County with FIPS 1073 on 2020-03-27 had a reproduction number (R) of 2.23541343921488, 10.0 incident cases (true data).
+County with FIPS 1073 on 2020-03-28 had a reproduction number (R) of 1.86256328971111, 35.0 incident cases (true data).
+County with FIPS 1073 on 2020-03-29 had a reproduction number (R) of 1.36953498566601, 32.0 incident cases (true data).
+County with FIPS 1073 on 2020-03-30 had a reproduction number (R) of 1.04044841637508, 11.0 incident cases (true data).
+County with FIPS 1073 on 2020-03-31 had a reproduction number (R) of 1.20341709976401, 25.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-01 had a reproduction number (R) of 1.31664225234453, 23.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-02 had a reproduction number (R) of 1.0407983528208, 27.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-03 had a reproduction number (R) of 1.2344777443082, 37.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-04 had a reproduction number (R) of 0.971141070023047, 7.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-05 had a reproduction number (R) of 1.17453332617777, 42.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-06 had a reproduction number (R) of 1.00509448733692, 20.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-07 had a reproduction number (R) of 1.13873044012897, 23.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-08 had a reproduction number (R) of 1.24442567154428, 31.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-09 had a reproduction number (R) of 1.13934749240433, 31.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-10 had a reproduction number (R) of 0.95529005019106, 32.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-11 had a reproduction number (R) of 0.785067579127606, 24.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-12 had a reproduction number (R) of 0.509840119387255, 18.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-13 had a reproduction number (R) of 0.382972011336277, 20.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-14 had a reproduction number (R) of 0.212764646046104, 3.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-15 had a reproduction number (R) of 0.327321003822274, 8.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-16 had a reproduction number (R) of 0.636216831603123, 6.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-17 had a reproduction number (R) of 0.753348040771938, 11.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-18 had a reproduction number (R) of 0.758317549742208, 28.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-19 had a reproduction number (R) of 0.528055131487261, 9.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-20 had a reproduction number (R) of 1.31304599751009, 6.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-21 had a reproduction number (R) of 2.01686831131774, 12.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-22 had a reproduction number (R) of 2.25117226183515, 44.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-23 had a reproduction number (R) of 1.92768021083269, 34.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-24 had a reproduction number (R) of 1.30295947675958, 19.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-25 had a reproduction number (R) of 0.804632788777911, 31.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-26 had a reproduction number (R) of 0.569800108623645, 11.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-27 had a reproduction number (R) of 0.677980716225725, 0.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-28 had a reproduction number (R) of 0.742905649435281, 22.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-29 had a reproduction number (R) of 1.09612703993726, 20.0 incident cases (true data).
+County with FIPS 1073 on 2020-04-30 had a reproduction number (R) of 1.09279596857037, 5.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-01 had a reproduction number (R) of 1.4564755791231, 43.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-02 had a reproduction number (R) of 1.13126271428063, 17.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-03 had a reproduction number (R) of 1.322978493519, 23.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-04 had a reproduction number (R) of 1.37405472020426, 23.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-05 had a reproduction number (R) of 1.2241171361934, 28.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-06 had a reproduction number (R) of 1.19238433620251, 28.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-07 had a reproduction number (R) of 0.944448552747019, 17.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-08 had a reproduction number (R) of 0.837389544774959, 29.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-09 had a reproduction number (R) of 0.539516234236799, 15.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-10 had a reproduction number (R) of 0.694435874127659, 12.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-11 had a reproduction number (R) of 1.14384062225521, 10.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-12 had a reproduction number (R) of 1.60838079174919, 26.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-13 had a reproduction number (R) of 1.84237836946786, 42.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-14 had a reproduction number (R) of 1.59075210433124, 38.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-15 had a reproduction number (R) of 1.47370563051769, 37.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-16 had a reproduction number (R) of 1.15870082766528, 25.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-17 had a reproduction number (R) of 0.899531752137275, 34.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-18 had a reproduction number (R) of 1.24043732948105, 22.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-19 had a reproduction number (R) of 1.35886441703921, 12.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-20 had a reproduction number (R) of 1.53092375109894, 66.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-21 had a reproduction number (R) of 1.64232971612398, 36.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-22 had a reproduction number (R) of 1.64232971612398, 29.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-23 had a reproduction number (R) of 1.64232971612398, 78.0 incident cases (true data).
+County with FIPS 1073 on 2020-05-23 had a reproduction number (R) of 1.49608985101101, 42.9196508339298 incident cases (predicted data).
+County with FIPS 1073 on 2020-05-24 had a reproduction number (R) of 1.33207061004841, 39.5772093157277 incident cases (predicted data).
+County with FIPS 1073 on 2020-05-25 had a reproduction number (R) of 1.17990385142853, 36.7048695149378 incident cases (predicted data).
+County with FIPS 1073 on 2020-05-26 had a reproduction number (R) of 1.05152649115148, 34.0974189111955 incident cases (predicted data).
+County with FIPS 1073 on 2020-05-27 had a reproduction number (R) of 0.964191700658981, 32.4896552623455 incident cases (predicted data).
+County with FIPS 1073 on 2020-05-28 had a reproduction number (R) of 0.907599840518358, 31.6170485152632 incident cases (predicted data).
+County with FIPS 1073 on 2020-05-29 had a reproduction number (R) of 0.865777998855307, 30.881070090014 incident cases (predicted data).
+County with FIPS 1073 on 2020-05-30 had a reproduction number (R) of 0.82786522080696, 29.8621222086029 incident cases (predicted data).
+County with FIPS 1073 on 2020-05-31 had a reproduction number (R) of 0.791777441068173, 28.5336816034296 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-01 had a reproduction number (R) of 0.75723154566122, 26.9945175425407 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-02 had a reproduction number (R) of 0.729178251977898, 25.5290258401621 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-03 had a reproduction number (R) of 0.710130131587953, 24.2906200478714 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-04 had a reproduction number (R) of 0.695139622227676, 23.1336586122601 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-05 had a reproduction number (R) of 0.682730629395081, 22.018865557208 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-06 had a reproduction number (R) of 0.673887189028267, 20.9838783092228 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-07 had a reproduction number (R) of 0.661233086883576, 19.8133870733553 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-08 had a reproduction number (R) of 0.647785201583302, 18.6267360945281 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-09 had a reproduction number (R) of 0.634741144633582, 17.4762762714034 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-10 had a reproduction number (R) of 0.625634894017967, 16.4647650724283 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-11 had a reproduction number (R) of 0.622160558631934, 15.6240507814869 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-12 had a reproduction number (R) of 0.621212993704568, 14.8595050590656 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-13 had a reproduction number (R) of 0.616168435824824, 14.0119757146565 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-14 had a reproduction number (R) of 0.603679526151526, 13.0280210486537 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-15 had a reproduction number (R) of 0.586303576118275, 11.9926080393986 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-16 had a reproduction number (R) of 0.568859852382901, 11.0196537102777 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-17 had a reproduction number (R) of 0.557676929714641, 10.2234051466684 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-18 had a reproduction number (R) of 0.556824333429817, 9.6477633984234 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-19 had a reproduction number (R) of 0.559080209004359, 9.13642194107436 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-20 had a reproduction number (R) of 0.560178591966845, 8.6111446824865 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-21 had a reproduction number (R) of 0.556470746578197, 8.02542273830744 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-22 had a reproduction number (R) of 0.548633256847289, 7.41055788578362 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-23 had a reproduction number (R) of 0.541387273166386, 6.84398492476285 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-24 had a reproduction number (R) of 0.537450333401361, 6.35842227777386 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-25 had a reproduction number (R) of 0.534866024871091, 5.92208252262862 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-26 had a reproduction number (R) of 0.532923308848815, 5.51995315684898 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-27 had a reproduction number (R) of 0.528490099937655, 5.11651185712754 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-28 had a reproduction number (R) of 0.51990253340888, 4.69971137875397 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-29 had a reproduction number (R) of 0.514851582767394, 4.3413663032845 incident cases (predicted data).
+County with FIPS 1073 on 2020-06-30 had a reproduction number (R) of 0.516569646691413, 4.05994643685782 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-01 had a reproduction number (R) of 0.520564544570269, 3.81028034204734 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-02 had a reproduction number (R) of 0.524366225559665, 3.57090900297854 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-03 had a reproduction number (R) of 0.523543512733442, 3.31395353134469 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-04 had a reproduction number (R) of 0.51786063438533, 3.04527641592319 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-05 had a reproduction number (R) of 0.507924443728393, 2.77498777562335 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-06 had a reproduction number (R) of 0.49566008678244, 2.51705809179806 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-07 had a reproduction number (R) of 0.486463732378085, 2.297028080869 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-08 had a reproduction number (R) of 0.483653403287625, 2.1230488171509 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-09 had a reproduction number (R) of 0.484236119386956, 1.97388001177303 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-10 had a reproduction number (R) of 0.483531269394665, 1.82693578597148 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-11 had a reproduction number (R) of 0.478848010776997, 1.67346947788434 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-12 had a reproduction number (R) of 0.470501537584557, 1.51826641899695 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-13 had a reproduction number (R) of 0.463071407646676, 1.37830038293759 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-14 had a reproduction number (R) of 0.462122404772917, 1.26802908514341 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-15 had a reproduction number (R) of 0.46410798855622, 1.17343070265529 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-16 had a reproduction number (R) of 0.465835449613918, 1.0843946317256 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-17 had a reproduction number (R) of 0.468807213038291, 1.00369793574822 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-18 had a reproduction number (R) of 0.471816513980529, 0.928185506833515 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-19 had a reproduction number (R) of 0.475210058273869, 0.858606056516463 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-20 had a reproduction number (R) of 0.481564967235972, 0.799144423485791 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-21 had a reproduction number (R) of 0.485484011099323, 0.740300604912961 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-22 had a reproduction number (R) of 0.485094520003984, 0.680211653268567 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-23 had a reproduction number (R) of 0.477726841540844, 0.616579557746084 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-24 had a reproduction number (R) of 0.467994168869428, 0.556555988307468 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-25 had a reproduction number (R) of 0.456627209111756, 0.500856999539245 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-26 had a reproduction number (R) of 0.452439356864617, 0.457931265434227 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-27 had a reproduction number (R) of 0.456358156666365, 0.42604794175435 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-28 had a reproduction number (R) of 0.465641721535983, 0.400433489665231 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-29 had a reproduction number (R) of 0.477553506622331, 0.377553266062021 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-30 had a reproduction number (R) of 0.485432181717267, 0.352195254443451 incident cases (predicted data).
+County with FIPS 1073 on 2020-07-31 had a reproduction number (R) of 0.48337281859968, 0.321562349794909 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-01 had a reproduction number (R) of 0.475788142733692, 0.290362584166294 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-02 had a reproduction number (R) of 0.472100903146787, 0.264747755581022 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-03 had a reproduction number (R) of 0.47046387457529, 0.242930645150496 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-04 had a reproduction number (R) of 0.46859368686786, 0.223112458817851 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-05 had a reproduction number (R) of 0.466119305419433, 0.204704213916347 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-06 had a reproduction number (R) of 0.46189173303741, 0.186994477849987 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-07 had a reproduction number (R) of 0.455271565703714, 0.169750816628364 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-08 had a reproduction number (R) of 0.448850528924307, 0.153984680206038 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-09 had a reproduction number (R) of 0.445386699414428, 0.140463598513232 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-10 had a reproduction number (R) of 0.441650916186712, 0.127928140074854 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-11 had a reproduction number (R) of 0.439363675731601, 0.116765859666294 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-12 had a reproduction number (R) of 0.440336778027173, 0.107243786325079 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-13 had a reproduction number (R) of 0.442433563758791, 0.0986349309176701 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-14 had a reproduction number (R) of 0.447066074996407, 0.0911402758674622 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-15 had a reproduction number (R) of 0.453827402183722, 0.0845408025211175 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-16 had a reproduction number (R) of 0.464546581665657, 0.0790505584000499 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-17 had a reproduction number (R) of 0.477095650747421, 0.074175241118402 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-18 had a reproduction number (R) of 0.486568195516005, 0.0691650452136334 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-19 had a reproduction number (R) of 0.493735771631681, 0.0642530782727703 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-20 had a reproduction number (R) of 0.493769336077129, 0.0589410865380118 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-21 had a reproduction number (R) of 0.486899841893453, 0.0534404465956332 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-22 had a reproduction number (R) of 0.474228343448764, 0.0479770024777589 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-23 had a reproduction number (R) of 0.460547338678816, 0.0430361529630881 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-24 had a reproduction number (R) of 0.450330219119955, 0.0389123526700343 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-25 had a reproduction number (R) of 0.446646022224211, 0.0356796674171465 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-26 had a reproduction number (R) of 0.451876619996696, 0.0333186401979687 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-27 had a reproduction number (R) of 0.465809644513788, 0.0316209315496301 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-28 had a reproduction number (R) of 0.481492590025395, 0.0300084531725774 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-29 had a reproduction number (R) of 0.496419504097955, 0.0283439839587508 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-30 had a reproduction number (R) of 0.506088844718544, 0.0264540660168821 incident cases (predicted data).
+County with FIPS 1073 on 2020-08-31 had a reproduction number (R) of 0.507511644779503, 0.0243137083484856 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-01 had a reproduction number (R) of 0.500606378402859, 0.0220397877964172 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-02 had a reproduction number (R) of 0.491427535969429, 0.019952137764506 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-03 had a reproduction number (R) of 0.480939574036778, 0.0180654875962468 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-04 had a reproduction number (R) of 0.468597142604741, 0.0163186191298858 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-05 had a reproduction number (R) of 0.460564109312893, 0.0148755532815754 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-06 had a reproduction number (R) of 0.460053478235461, 0.0137658078433825 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-07 had a reproduction number (R) of 0.465974727200394, 0.0128886496247791 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-08 had a reproduction number (R) of 0.478205804690802, 0.0121935855717863 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-09 had a reproduction number (R) of 0.493001469892315, 0.0115596812564709 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-10 had a reproduction number (R) of 0.509241555640022, 0.010962555841791 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-11 had a reproduction number (R) of 0.517497739433616, 0.0102261691011738 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-12 had a reproduction number (R) of 0.517351519919652, 0.0093975435696514 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-13 had a reproduction number (R) of 0.512425947783431, 0.0085795396464829 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-14 had a reproduction number (R) of 0.506046527846148, 0.0078359026268347 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-15 had a reproduction number (R) of 0.502437259909691, 0.0072169436874417 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-16 had a reproduction number (R) of 0.503178216051077, 0.0067167137742906 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-17 had a reproduction number (R) of 0.511238876082542, 0.0063442263592942 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-18 had a reproduction number (R) of 0.520071470457991, 0.0059951575723881 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-19 had a reproduction number (R) of 0.52281658788721, 0.0055917081109891 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-20 had a reproduction number (R) of 0.520245977219112, 0.0051581481228981 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-21 had a reproduction number (R) of 0.515957290825246, 0.0047426214496489 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-22 had a reproduction number (R) of 0.515913643382935, 0.0044004197315088 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-23 had a reproduction number (R) of 0.522312921856335, 0.0041385435012645 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-24 had a reproduction number (R) of 0.533037388375124, 0.003926295674483 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-25 had a reproduction number (R) of 0.541080292333303, 0.0037055458505937 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-26 had a reproduction number (R) of 0.54603671009107, 0.0034765243963791 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-27 had a reproduction number (R) of 0.546721486914452, 0.0032370907531938 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-28 had a reproduction number (R) of 0.547841187022861, 0.0030194800973243 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-29 had a reproduction number (R) of 0.545967838945084, 0.0028051781365228 incident cases (predicted data).
+County with FIPS 1073 on 2020-09-30 had a reproduction number (R) of 0.540247591697364, 0.0025913708626346 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-01 had a reproduction number (R) of 0.53721270253381, 0.0024081639516507 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-02 had a reproduction number (R) of 0.539805495855389, 0.0022625962543189 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-03 had a reproduction number (R) of 0.546770808646717, 0.0021427475761961 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-04 had a reproduction number (R) of 0.556678796783246, 0.0020384904253637 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-05 had a reproduction number (R) of 0.565110293132593, 0.0019322478290842 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-06 had a reproduction number (R) of 0.567091416189371, 0.0018099529157965 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-07 had a reproduction number (R) of 0.563525449828353, 0.0016795864359895 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-08 had a reproduction number (R) of 0.557748900984935, 0.0015542830539997 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-09 had a reproduction number (R) of 0.556451264577111, 0.0014521262931417 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-10 had a reproduction number (R) of 0.559671246054509, 0.0013694547745723 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-11 had a reproduction number (R) of 0.567154382597403, 0.0013018594967122 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-12 had a reproduction number (R) of 0.577294151995598, 0.0012427586493244 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-13 had a reproduction number (R) of 0.589320504044882, 0.001189123557913 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-14 had a reproduction number (R) of 0.598128311482475, 0.0011309737087823 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-15 had a reproduction number (R) of 0.604199291138883, 0.0010711066441035 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-16 had a reproduction number (R) of 0.606140406023576, 0.0010087702143516 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-17 had a reproduction number (R) of 0.602405153152472, 0.0009429956468455 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-18 had a reproduction number (R) of 0.595760434615626, 0.0008790029297569 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-19 had a reproduction number (R) of 0.590824500703304, 0.0008230421302014 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-20 had a reproduction number (R) of 0.588196798073303, 0.0007743965787134 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-21 had a reproduction number (R) of 0.584849283466364, 0.0007277715403841 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-22 had a reproduction number (R) of 0.584584547089588, 0.000687066977484 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-23 had a reproduction number (R) of 0.58610047934078, 0.0006498998216428 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-24 had a reproduction number (R) of 0.589233379434057, 0.0006157524536707 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-25 had a reproduction number (R) of 0.589746020578248, 0.0005803036919371 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-26 had a reproduction number (R) of 0.59089413046125, 0.0005472343532746 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-27 had a reproduction number (R) of 0.597931293157632, 0.0005211781811294 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-28 had a reproduction number (R) of 0.603564394811977, 0.000495304942738 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-29 had a reproduction number (R) of 0.608620360446046, 0.0004704404834049 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-30 had a reproduction number (R) of 0.606776165298441, 0.0004420120485727 incident cases (predicted data).
+County with FIPS 1073 on 2020-10-31 had a reproduction number (R) of 0.604182256213557, 0.0004150981910431 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-01 had a reproduction number (R) of 0.603800564803274, 0.0003916141697786 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-02 had a reproduction number (R) of 0.606221412605008, 0.0003714919089847 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-03 had a reproduction number (R) of 0.607242940585691, 0.0003517487084085 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-04 had a reproduction number (R) of 0.603237707531023, 0.0003303082233396 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-05 had a reproduction number (R) of 0.596263853220435, 0.000308571584995 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-06 had a reproduction number (R) of 0.589022359963014, 0.0002880615596517 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-07 had a reproduction number (R) of 0.584752305337733, 0.0002702224189379 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-08 had a reproduction number (R) of 0.586416440831226, 0.0002559847349991 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-09 had a reproduction number (R) of 0.594551918091218, 0.0002449890842818 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-10 had a reproduction number (R) of 0.599540978696307, 0.0002329600452691 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-11 had a reproduction number (R) of 0.602849121361925, 0.00022067706049 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-12 had a reproduction number (R) of 0.609292959552765, 0.0002100274658008 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-13 had a reproduction number (R) of 0.617002529071317, 0.0002003488935241 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-14 had a reproduction number (R) of 0.626389253575374, 0.0001917688550104 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-15 had a reproduction number (R) of 0.63255652051892, 0.0001827915641595 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-16 had a reproduction number (R) of 0.636598079171831, 0.0001738559188117 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-17 had a reproduction number (R) of 0.641314065421282, 0.0001657516502997 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-18 had a reproduction number (R) of 0.645991477915756, 0.0001582338728882 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-19 had a reproduction number (R) of 0.648986901287742, 0.0001508572468777 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-20 had a reproduction number (R) of 0.646613785735345, 0.000142791364589 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-21 had a reproduction number (R) of 0.641906029035625, 0.0001347820079073 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-22 had a reproduction number (R) of 0.64022264422161, 0.0001279083976137 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-23 had a reproduction number (R) of 0.639209080141277, 0.000121566409377 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-24 had a reproduction number (R) of 0.643260758236703, 0.0001164594472835 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-25 had a reproduction number (R) of 0.646678672214309, 0.0001114131507663 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-26 had a reproduction number (R) of 0.659606453649742, 0.0001080857394135 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-27 had a reproduction number (R) of 0.678915802249148, 0.0001057731990957 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-28 had a reproduction number (R) of 0.690161200987382, 0.0001022349585453 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-29 had a reproduction number (R) of 0.689973915214545, 9.72393521500476e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-11-30 had a reproduction number (R) of 0.685460788104728, 9.20456651551573e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-01 had a reproduction number (R) of 0.691909305379643, 8.87289498079697e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-02 had a reproduction number (R) of 0.70772166139597, 8.68685710597802e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-03 had a reproduction number (R) of 0.722516324934964, 8.50095991788829e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-04 had a reproduction number (R) of 0.721694211829967, 8.1442003471972e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-05 had a reproduction number (R) of 0.71007629616882, 7.68907974496257e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-06 had a reproduction number (R) of 0.698419425923668, 7.26446133334491e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-07 had a reproduction number (R) of 0.693346736284351, 6.93695724229889e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-08 had a reproduction number (R) of 0.695693863977794, 6.7014432323471e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-09 had a reproduction number (R) of 0.699834073241868, 6.48917571797335e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-10 had a reproduction number (R) of 0.713982221707502, 6.36543298268358e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-11 had a reproduction number (R) of 0.740812867978927, 6.34177898572222e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-12 had a reproduction number (R) of 0.767051227716416, 6.29984847417173e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-13 had a reproduction number (R) of 0.775520522620705, 6.1118152242593e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-14 had a reproduction number (R) of 0.785683863309084, 5.95072096382582e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-15 had a reproduction number (R) of 0.804342779928739, 5.87242510447271e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-16 had a reproduction number (R) of 0.82417832877698, 5.82169820398816e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-17 had a reproduction number (R) of 0.835186537533042, 5.726302586122e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-18 had a reproduction number (R) of 0.828017951110684, 5.52459818269537e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-19 had a reproduction number (R) of 0.821223196061599, 5.34392729617845e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-20 had a reproduction number (R) of 0.81814411157096, 5.20321452047558e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-21 had a reproduction number (R) of 0.825663150375802, 5.13968518573029e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-22 had a reproduction number (R) of 0.840309166723688, 5.12203875072773e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-23 had a reproduction number (R) of 0.863572745207656, 5.15175758825329e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-24 had a reproduction number (R) of 0.897137346183269, 5.23443670390146e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-25 had a reproduction number (R) of 0.925732680563642, 5.28247973144745e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-26 had a reproduction number (R) of 0.937571516073508, 5.23856081589261e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-27 had a reproduction number (R) of 0.932313271538584, 5.11411650884169e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-28 had a reproduction number (R) of 0.914823014181163, 4.94546766244496e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-29 had a reproduction number (R) of 0.900570881797459, 4.81705600299189e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-30 had a reproduction number (R) of 0.890031673029164, 4.72375361597328e-05 incident cases (predicted data).
+County with FIPS 1073 on 2020-12-31 had a reproduction number (R) of 0.906281441532082, 4.77638954147123e-05 incident cases (predicted data).
+```
+
+And the report should follow a similar structure to the following example:
+COVID-19 Outlook: Finding a new equilibrium as we flatten the curve
+
+
+As we analyze the second of our weekly updates to the PolicyLab COVID-Lab model, we can see that community norms and distancing behaviors are changing quickly out there. Counties continue to open at different speeds and, we assume, with varying levels of vigilance to masking and hygiene routines that can mitigate new COVID-19 transmission as people start to mix more often.  
+
+Within our team, we continue to work diligently to improve the predictive capability of our models, as well as to incorporate new information on commuting risk to better illustrate transmission dynamics across neighboring communities.
+
+Last week, we foresaw that many areas of the south were demonstrating heightened risk for virus resurgence as they reopened compared to other areas of the country. We also kept a close eye on ongoing epidemics in the Washington, D.C. metro area and the upper Midwest. Individual counties, sometimes defined by a meatpacking facility, were also continuing to flare up in central and mid-Atlantic areas, risking spread to neighboring communities.
+
+The news is mixed again this week, although a bit more optimistic. Areas of the south, particularly in Texas and Florida, continue to reveal some increased risk, but no worse than our predictions last week. Other counties are still seeing elevated cases, but appear to be achieving some equilibrium as their predicted case numbers are stabilizing, albeit at higher counts than they were a few weeks ago. This suggests that reopenings are affecting the ability of these communities to degrade new cases, but virus transmission is also not projected to surge.
+
+For these communities—like Atlanta, Nashville, Palm Beach, Miami, Los Angeles, and Salt Lake City—higher but flattened levels of transmission may represent the tradeoff of reopening economies, i.e. our new normal. Those areas that are more cautious with maintained distancing practices and preventing unnecessary crowding may be able to level out at lower rates. We see evidence for that in Madison, Denver and Seattle. But for those communities that choose to reopen even with higher daily circulating cases, they need be mindful of protecting and surveying their locations at highest risk for resurgence, like nursing homes and factories. Outbreaks in those areas will ignite easier if there are higher community rates.
+
+We will, therefore, need to carefully watch in the coming weeks the counties we’ve seen building this sort of equilibrium. To the degree that hospitalizations are not rising in a way that threatens capacity within local areas, that may be acceptable to community members. However, hospital capacity was already an issue in many rural counties before the pandemic. That makes us concerned about the rising case counts we’re projecting in Mississippi, Alabama, North Carolina, and Omaha, Neb. But if areas in Virginia, D.C., Maryland, or Southeast Florida can tolerate the new equilibrium without stressing local resources, they may be able to teeter in a delicate balance. 
+
+For those communities that are still in the midst of the epidemic, like Chicago and Minneapolis, this issue is more acute as they are still surging and will likely take weeks to stabilize with reduced stress on their health care systems.
+
+All of this makes the next few weeks a critical time to follow the PolicyLab models. To what degree will this equilibrium hold in many places? How will Memorial Day, with its associated gatherings and travels, create a new dynamic in resurgence risk? And finally, as we reach those extreme summer temperatures and humidity levels, how will swift reopenings in many southern communities collide with the mitigating effects of hot, humid weather to affect future transmission risk? We’ll be evaluating all of this and more as we continue our weekly updates.
+
+Our forecasts are best viewed as snapshots across time that communities can consider alongside pressure on local hospital emergency departments and disease outbreaks in neighboring areas. To the degree that all signals are detecting risk, resurgence will be confirmed. To the degree that we foresee risk that other indicators have not confirmed, we would suggest individuals adjust their routines so they can more easily adapt to periods of heightened risk—this means embracing those inconveniences of wearing masks in crowded indoor locations and washing your hands every time you enter your home. Think of our models as a dynamic early warning system that is complementary to what you are seeing on the ground in your communities, and stay tuned for more updates next week.
+
+
+
