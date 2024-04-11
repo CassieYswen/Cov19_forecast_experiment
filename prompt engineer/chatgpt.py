@@ -15,7 +15,8 @@ client = OpenAI(api_key=openai.api_key)
 # Define a function to call the OpenAI GPT-4 API
 def ask_gpt(prompt, temperature):
      completion = client.chat.completions.create(
-            model="gpt-4-0125-preview",
+            #model="gpt-4-0125-preview",
+            model= "gpt-4-turbo",
             messages=[
                 {
                     "role": "user",
@@ -70,7 +71,7 @@ It should be detailed and not shorter than 2000 words to cover the necessary bre
 Here is the summarized CSV data:
 ```{csv_text_1}```
 
-And the report should follow a similar structure to the following example:
+And the report should cover similar topics and content to the following example:
 COVID-19 Outlook: Finding a new equilibrium as we flatten the curve
 
 
@@ -95,26 +96,18 @@ Our forecasts are best viewed as snapshots across time that communities can cons
 
 
 """
-# response = ask_gpt(prompt1,temperature=0.7)
-# print(response)
-#save response to a text file
-# with open("covid_report.txt", "w") as text_file:
-#     text_file.write(response)
 
-#save prompt to a text file
-with open("covid_prompt.txt", "w") as text_file:
-    text_file.write(prompt1)
+# Getting the response
+response = ask_gpt(prompt1, temperature=0)
+#print response
+print(response)
+# Ensure the output directory exists
+output_dir = "outputs/chatgpt"
+os.makedirs(output_dir, exist_ok=True)
 
-# prompt10 = f"""
-# Based on the daily reported COVID-19 cases by county, as provided in the CSV data, generate a comprehensive report. 
-# The report should analyze the disease trajectory, identify trends, and offer policy recommendations tailored to counties based on their case counts. 
-# Consider factors such as rate of infection, comparison with state and national trends, and healthcare capacity.
+# Save the prompt and response to the same text file
+file_path = os.path.join(output_dir, "covid_report_tem0.txt")
+with open(file_path, "w") as text_file:
+    text_file.write("Prompt:\n" + prompt1 + "\n\n")
+    text_file.write("Response:\n" + response)
 
-# The report should be structured with headings and subheadings, including an executive summary, analysis section, and a conclusion with policy recommendations. 
-# It should be detailed and not shorter than 2000 words to cover the necessary breadth and depth.
-
-# Here is the summarized CSV data:
-# ```{csv_text_10}```
-# """
-# response10 = ask_gpt(prompt10,temperature=0.7)
-# print(response10)

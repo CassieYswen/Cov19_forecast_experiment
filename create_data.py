@@ -14,32 +14,37 @@ def generate_data_true(T, NoCov, R_0, I_0, Omega, OraclePhi, OracleBeta, bias_co
     # Generate daily incident cases and covariates data
     Z = np.zeros((T, NoCov))
     for t in range(T):
-        Z[t, 0] = 5 - (T / 8) + (t / 4) + norm.rvs(loc=0, scale=3)
+        Z[t, 0] = 5-(T/8)+((2*t)/8) + np.random.normal(0, 3)
     Z[:, 1] = logit(np.random.uniform(0.01, 0.99, T)) + 2
 
     # R[t], the instantaneous reproduction number at time t
     R = np.zeros(T)
     epsilon = norm.rvs(size=T, scale=np.sqrt(-2 * np.log(bias_corr_const)))
-    R[0] = np.exp(OraclePhi[0] + OraclePhi[1] * np.log(R_0) + Z[0, :] @ OracleBeta + epsilon[0])
+
+
+    R[0] = np.exp(OraclePhi[0] + OraclePhi[1] * np.log(R_0) + np.dot(Z[0, :] , OracleBeta) + epsilon[0])
 
     for t in range(1, T):
-        R[t] = np.exp(OraclePhi[0] + OraclePhi[1] * np.log(R[t-1]) + Z[t, :] @ OracleBeta + epsilon[t])
+        R[t] = np.exp(OraclePhi[0] + OraclePhi[1] * np.log(R[t-1]) + np.dot(Z[t, :] , OracleBeta) + epsilon[t])
 
     # Generate I[t], number of incidences at time t
     I = np.zeros(T)
-    I[0] = poisson.rvs(R[0] * I_0 * Omega[0])
+    I[0] = np.random.poisson(R[0] * I_0 * Omega[0])
 
     for t in range(1, 25):
-        I[t] = poisson.rvs(R[t] * (I_0 * Omega[t] + I[:t] @ Omega[t-1::-1]))
+        I[t] = np.random.poisson(R[t] * (I_0 * Omega[t] + np.sum(I[:t] * Omega[t-1::-1])))
 
     for t in range(25, T):
-        lambda_val = R[t] * (I[t-25:t] @ Omega[::-1])
-        if lambda_val <= 100000:
-            I[t] = poisson.rvs(lambda_val)
+        reversed_I_segment = I[t-25:t][::-1]
+        lambda_val = R[t]*np.dot(reversed_I_segment, Omega[:25])
+ 
+        if np.dot(reversed_I_segment, Omega[:25]) <= 100000:
+            I[t] = np.random.poisson( lambda_val)
         else:
-            multipconstant = int(lambda_val // 100000)
-            residueconstant = lambda_val % 100000
-            I[t] = poisson.rvs(100000, size=multipconstant).sum() + poisson.rvs(residueconstant)
+            multipconstant = int(( lambda_val) // 100000)
+            residueconstant = ( lambda_val) % 100000
+            I[t] = np.sum(np.random.poisson(100000, multipconstant)) + np.random.poisson(residueconstant)
+
 
     # Save Z, I, R as a DataFrame
     df = pd.DataFrame({'Z1': Z[:, 0], 'Z2': Z[:, 1], 'R': R, 'I': I})

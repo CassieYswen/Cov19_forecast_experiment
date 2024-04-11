@@ -10,7 +10,7 @@ import os
 
 
 #set seed for reproducibility
-np.random.seed(42)
+np.random.seed(214)
 # Define the common parameters
 T = 120
 NoCov = 2
@@ -33,7 +33,8 @@ df1 = generate_data_more_var(T, NoCov, R_0, I_0, Omega, OraclePhi, OracleBeta1, 
 df2 = generate_data_ar2(T, NoCov, R_0, I_0, Omega, OraclePhi1, OracleBeta, bias_corr_const, Rmin1)
 #define tau
 tau_0=5
-
+#write out df to .csv file for inspection
+df.to_csv("df.csv", index=False)
 
 # Helper Functions
 def logistic(x):
@@ -50,7 +51,8 @@ def omega_vector(length=25, shape=2.5, scale=3):
     return omega
 Z = df[['Z1', 'Z2']].values
 I = df['I'].values
-
+ #print the min and max of I
+print(np.min(I),np.max(I))
 #def QSOEID(Z, I, NoCov, T, I_0, R_0, bias_corr_const,tau_0):
 Omega = omega_vector()
 Lambda = np.full(T, np.nan)
@@ -66,7 +68,7 @@ EstR = np.full(T, np.nan)
 EstR[0] = max(1, I[0] / (I_0 * Omega[0]))
 for t in range(1, tau_0):
     EstR[t] = max(1, I[t] / (I_0 * Omega[t] + np.dot(I[:t], Omega[t-1::-1])))
-#print(EstR[:t])
+print(EstR[:t])
 
 # Calculating barZ, WTilde, YTilde, BetaTilde, ZYTilde, EstPhi, and EstBeta
 barZ=Z
@@ -102,28 +104,31 @@ def ell( phi, k ,bias_corr_const):
     global    R_0, tau_0
 
     # First part of the calculation
-    ZYTilde[k - 1, :] = (np.log(EstR[0]) - phi[1] * np.log(R_0) - phi[0]) * (Z[0, :] - barZ[k - 1, :])
+    ZYTilde[(k - 1), ] = (np.log(EstR[ 0]) - phi[1] * np.log(R_0) - phi[0]) * (Z[0, :] - barZ[(k - 1), :])
+    EstR[0] = np.exp(phi[0] + phi[1] * np.log(R_0))
     print(ZYTilde[k - 1, :])
     #EstR[0] = np.exp(phi[0] + phi[1] * np.log(R_0))
 
     # Loop for updating ZYTilde
     for i in range(1, k-1):
-        ZYTilde[k - 1, :] += (np.log(EstR[i]) - phi[1] * np.log(EstR[i - 1]) - phi[0]) * (Z[i, :] - barZ[k - 1, :])
+        ZYTilde[(k - 1), ] += (np.log(EstR[i]) - phi[1] * np.log(EstR[ i - 1]) - phi[0]) * (Z[i, :] - barZ[(k - 1), :])
+
         print(ZYTilde[k - 1, :])
 
     # Updating BetaTilde
-    BetaTilde[k, :] = ZYTilde[k - 1, :] @ WTilde[k - 1]
-    print(BetaTilde[k, :])
+    BetaTilde[k-1 , :] = np.dot(ZYTilde[(k - 2), :], WTilde[(k - 2)])
+    #print(BetaTilde[k-1, :])
     
     # Loop for updating YTilde
     for i in range(tau_0, k):
-        YTilde[0, i] = phi[0] + phi[1] * np.log(EstR[i - 1]) + Z[i, :].T @ BetaTilde[k, :]
-        print(YTilde[0, i])
+        YTilde[:, i] = phi[0] + phi[1] * np.log(EstR[i - 1]) + np.dot(Z[i, :], BetaTilde[k - 1, :])
+        print(YTilde[:, i])
 
     # Calculating the result
     result = 0
     for j in range(tau_0, k):
-        result += I[j] * YTilde[0,j] - bias_corr_const * np.exp(YTilde[0,j]) * Lambda[j]
+        result += I[j] * YTilde[:, j] - bias_corr_const * (np.exp(YTilde[:, j])) * Lambda[j]
+
 
     return -result
 
@@ -155,13 +160,13 @@ for t in range(tau_0, T):
     #print(x)
     ZYHat[t - 1, :] = (np.log(EstR[0]) - EstPhi[t, 1] * np.log(R_0) - EstPhi[t, 0]) * (Z[0, :] - barZ[t - 1, :])
     for i in range(1, t - 1):
-        ZYHat[t - 2, :] += (np.log(EstR[i]) - EstPhi[t-1, 1] * np.log(EstR[i - 1]) - EstPhi[t-1, 0]) * (Z[i, :] - barZ[t - 2, :])
+        ZYHat[t - 1, :] += (np.log(EstR[ i]) - EstPhi[t, 1] * np.log(EstR[i - 1]) - EstPhi[t, 0]) * (Z[i, :] - barZ[t - 1, :])
 
     # Update EstBeta
-    EstBeta[t, :] = ZYHat[t - 1, :] @ WTilde[t - 1]
+    EstBeta[t, :] = np.dot(ZYHat[t - 1, :] , WTilde[t - 1])
 
     # Update EstR
-    EstR[t] = np.exp(EstPhi[t, 0] + EstPhi[t, 1] * np.log(EstR[ t - 1]) + Z[t, :].T @ EstBeta[t, :])
+    EstR[t] = np.exp(EstPhi[t, 0] + EstPhi[t, 1] * np.log(EstR[ t - 1]) + np.dot(Z[t, :], EstBeta[t, :]))
     #print(EstR[:t])
     # Check condition and update if necessary
     if  t > 0 and greater_or_na(abs(EstR[t] - EstR[t - 1]), 5, 'L182?'):
