@@ -74,7 +74,7 @@ for index, row in df1.iterrows():
                 f"{row['inc']} incident cases ({data_type}).\n"
 prompt1 = f"""
 Here we have trajactory and predicted data by an autoregressive TIS model of COVID-19 cases in USA counties.
-Learn from the example report below.
+Learn from the example report below, and make the report informative do not say general things.
 Generate a comprehensive analysis report based on the summarized CSV data provided below. The report should delve into the COVID-19 disease trajectory, identify trends, and offer specific policy recommendations tailored to counties based on their case counts. Factors to consider include the rate of infection, comparisons with state and national trends, and healthcare capacity in each county.
 
 Here is the summarized CSV data:
@@ -111,7 +111,7 @@ Instructions for report generation:
 6. Consult local and national news sources from the time of data collection to add context and depth to the analysis.
 7. Focus on recent trends and projections, and formulate policy recommendations based on the data trajectory, recent trends, and the combined effects of news, geographic location, holidays, and weekends.
 8. Ensure the report includes actionable recommendations for public health officials or policymakers.
-9. Maintain a professional and analytical tone throughout the report, akin to a high-level policy analysis document.
+9. Give a state and national level view, make police recommendations based on real data and news, do not say general things.
 
 The goal is to produce a detailed and actionable analysis that can aid policymakers and health officials in making informed decisions as they navigate the ongoing pandemic.
 """
@@ -131,14 +131,14 @@ Instructions for report generation:
 6. Consult local and national news sources from the time of data collection to add context and depth to the analysis.
 7. Focus on recent trends and projections, and formulate policy recommendations based on the data trajectory, recent trends, and the combined effects of news, geographic location, holidays, and weekends.
 8. Ensure the report includes actionable recommendations for public health officials or policymakers.
-9. Maintain a professional and analytical tone throughout the report, akin to a high-level policy analysis document.
+9. Maintain a professional and analytical tone throughout the report, akin to a high-level policy analysis document, be informative and do not say general things.
 
 The goal is to produce a detailed and actionable analysis that can aid policymakers and health officials in making informed decisions as they navigate the ongoing pandemic.
 """
 
 
 # Getting the response
-response = ask_gpt(prompt2, temperature=0.7)
+response = ask_gpt(prompt1, temperature=0.7)
 #print response
 print(response)
 # Ensure the output directory exists
@@ -146,7 +146,7 @@ output_dir = "outputs/chatgpt"
 os.makedirs(output_dir, exist_ok=True)
 
 # Save the prompt and response to the same text file
-file_path = os.path.join(output_dir, "covid_report_10countyP2.txt")
+file_path = os.path.join(output_dir, "covid_report_10county3.txt")
 with open(file_path, "w") as text_file:
     text_file.write("Prompt:\n" + prompt1 + "\n\n")
     text_file.write("Response:\n" + response)
