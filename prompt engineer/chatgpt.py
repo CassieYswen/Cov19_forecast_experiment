@@ -146,7 +146,7 @@ output_dir = "outputs/chatgpt"
 os.makedirs(output_dir, exist_ok=True)
 
 # Save the prompt and response to the same text file
-file_path = os.path.join(output_dir, "covid_report_10county3.txt")
+file_path = os.path.join(output_dir, "covid_report_10county4.txt")
 with open(file_path, "w") as text_file:
     text_file.write("Prompt:\n" + prompt1 + "\n\n")
     text_file.write("Response:\n" + response)
