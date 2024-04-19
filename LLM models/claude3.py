@@ -1,5 +1,6 @@
 import anthropic
 import os
+import textwrap
 import pandas as pd
 import json
 
@@ -103,11 +104,11 @@ print(response)
 # Ensure the output directory exists
 output_dir = "outputs/claude"
 os.makedirs(output_dir, exist_ok=True)
-response_string = "\n".join(response) 
+#response_string = "\n".join(response) 
 
 # Save the prompt and response to the same text file
 file_path = os.path.join(output_dir, "covid_report_10county.txt")
 with open(file_path, "w") as text_file:
     text_file.write("Prompt:\n" + prompt1 + "\n\n")
-    text_file.write("Response:\n" + response_string)
+    text_file.write("Response:\n" + response[0]["text"])
 

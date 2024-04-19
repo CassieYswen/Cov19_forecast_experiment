@@ -39,17 +39,6 @@ df1 = df1[df1['R'].notna()] # too large
 # Get unique FIPS representing different counties.
 unique_fips = df1['fips'].unique()
 
-# # Function to generate text for a given number of counties.
-# def generate_csv_text_for_counties(num_counties):
-#     csv_text = ""
-#     selected_fips = unique_fips[:num_counties]  # Select the first 'num_counties' FIPS codes
-#     selected_df = df1[df1['fips'].isin(selected_fips)]
-#     for _, row in selected_df.iterrows():
-#         data_type = "true data" if row['imp'] == 0 else "predicted data"
-#         csv_text += f"County with FIPS {row['fips']} on {row['date']} had a reproduction number (R) of {row['R']}, " \
-#                     f"{row['inc']} incident cases ({data_type}).\n"
-#     return csv_text
-# Function to generate a concise description for a given number of counties from the dataset.
 def generate_csv_text_for_counties(num_counties):
     csv_text = "COVID-19 data for selected counties: where R is reproduction number\n"  # Initial description to set the context
     selected_fips = unique_fips[:num_counties]  # Select the first 'num_counties' FIPS codes

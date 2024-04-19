@@ -34,7 +34,7 @@ df2 = generate_data_ar2(T, NoCov, R_0, I_0, Omega, OraclePhi1, OracleBeta, bias_
 #define tau
 tau_0=5
 #write out df to .csv file for inspection
-df.to_csv("df.csv", index=False)
+#df.to_csv("df.csv", index=False)
 
 # Helper Functions
 def logistic(x):
@@ -52,7 +52,7 @@ def omega_vector(length=25, shape=2.5, scale=3):
 Z = df[['Z1', 'Z2']].values
 I = df['I'].values
  #print the min and max of I
-print(np.min(I),np.max(I))
+#print(np.min(I),np.max(I))
 def QSOEID(Z, I, NoCov, T, I_0, R_0, bias_corr_const,tau_0):
     Omega = omega_vector()
     Lambda = np.full(T, np.nan)
@@ -79,15 +79,16 @@ def QSOEID(Z, I, NoCov, T, I_0, R_0, bias_corr_const,tau_0):
     for t in range(1, tau_0):
         WTilde.append(np.zeros((NoCov, NoCov)))
         for i in range(t):
-            WTilde[t] += np.outer(Z[i,] - barZ[t,], Z[i,] - barZ[t,])
+            diff = Z[i,] - barZ[t,]
+            WTilde[t] += np.outer(diff, diff.T)
         WTilde[t] = np.linalg.inv(WTilde[t] + 0.1 * np.eye(NoCov))
-
+    #print(WTilde)
     for t in range(2, T):
         WTilde.append(np.zeros((NoCov, NoCov)))
         for i in range(t):
             WTilde[t] += np.outer(Z[i,] - barZ[t,], Z[i,] - barZ[t,])
         WTilde[t] = np.linalg.inv(WTilde[t])
-
+    #print(WTilde)
     YTilde = np.full((1, T), np.nan)
     for t in range(tau_0):
         YTilde[0, t] = np.log(EstR[t])
@@ -150,7 +151,11 @@ def QSOEID(Z, I, NoCov, T, I_0, R_0, bias_corr_const,tau_0):
     #print(x)
     # Minimize over the minus profile log-likelihood
     for t in range(tau_0, T):
-        res = minimize(ell, x0=[0.05, 0.7], args=(t, ),
+        if t == tau_0:
+            x0 = [0.05, 0.7]
+        elif t > tau_0 and t < T:
+            x0 = EstPhi[t-1, :]
+        res = minimize(ell, x0=x0, args=(t, ),
                         bounds=[(-5, 5), ( 0.3,0.95)],method='L-BFGS-B')
         EstPhi[t , :] = res.x
         #print(EstPhi[t, :])
@@ -211,11 +216,15 @@ def perform_estimation_and_plot(df, file_suffix):
     plt.show()
 
     # Saving EstPhi, EstBeta, EstR to files
-    np.savetxt(f"EstPhi_{file_suffix}.csv", EstPhi, delimiter=",")
-    np.savetxt(f"EstBeta_{file_suffix}.csv", EstBeta, delimiter=",")
-    np.savetxt(f"EstR_{file_suffix}.csv", EstR, delimiter=",")
+    np.savetxt(os.path.join(results_folder, f"EstPhi_{file_suffix}.csv"), EstPhi, delimiter=",")
+    np.savetxt(os.path.join(results_folder, f"EstBeta_{file_suffix}.csv"), EstBeta, delimiter=",")
+    np.savetxt(os.path.join(results_folder, f"EstR_{file_suffix}.csv"), EstR, delimiter=",")
+
 
 # Assuming df1 and df2 are your DataFrames
+    #read in test data
+#test=pd.read_csv("/Users/wenys/Downloads/test1.csv")
+#perform_estimation_and_plot(test, 'test')
 perform_estimation_and_plot(df, 'df')
 perform_estimation_and_plot(df0, 'df0')
 perform_estimation_and_plot(df1, 'df1')
