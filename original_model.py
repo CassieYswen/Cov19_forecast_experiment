@@ -155,8 +155,9 @@ def QSOEID(Z, I, NoCov, T, I_0, R_0, bias_corr_const,tau_0):
             x0 = [0.05, 0.7]
         elif t > tau_0 and t < T:
             x0 = EstPhi[t-1, :]
+        #x0 = [0.05, 0.7]
         res = minimize(ell, x0=x0, args=(t, ),
-                        bounds=[(-5, 5), ( 0.3,0.95)],method='L-BFGS-B')
+                        bounds=[(-5, 5), ( 0.3,0.95)],method='trust-ncg')
         EstPhi[t , :] = res.x
         #print(EstPhi[t, :])
         x=ell([0.05, 0.7], t)
@@ -208,12 +209,13 @@ def perform_estimation_and_plot(df, file_suffix):
     plt.legend()
 
     results_folder = "Results_Origin"
+    
 
     # Save the plot to a file
     plt.savefig(os.path.join(results_folder,f'R_comparison_{file_suffix}.png'))
 
     # Show the plot
-    plt.show()
+    #plt.show()
 
     # Saving EstPhi, EstBeta, EstR to files
     np.savetxt(os.path.join(results_folder, f"EstPhi_{file_suffix}.csv"), EstPhi, delimiter=",")
@@ -226,6 +228,6 @@ def perform_estimation_and_plot(df, file_suffix):
 #test=pd.read_csv("/Users/wenys/Downloads/test1.csv")
 #perform_estimation_and_plot(test, 'test')
 perform_estimation_and_plot(df, 'df')
-perform_estimation_and_plot(df0, 'df0')
-perform_estimation_and_plot(df1, 'df1')
-perform_estimation_and_plot(df2, 'df2')
+# perform_estimation_and_plot(df0, 'df0')
+# perform_estimation_and_plot(df1, 'df1')
+# perform_estimation_and_plot(df2, 'df2')
