@@ -54,6 +54,10 @@ word_freq = Counter()
 #list to store processed file names
 processed_files = []
 
+#variable to store total number of words, file processed and failed
+files_processed = 0
+files_failed = 0
+total_word_count = 0
 # Process each document in the reports directory
 for filename in os.listdir(reports_dir):
     if filename.endswith(".docx") and not filename.startswith("~$"):
@@ -63,9 +67,12 @@ for filename in os.listdir(reports_dir):
             all_documents_text += " " + document_text  # Append text from each document
             words = clean_and_split_text(document_text)
             word_freq.update(words)  # Update the Counter with words from this document
+            total_word_count += len(words) # Increment the total word count
             processed_files.append(filename)
+            files_processed += 1 # Increment the count of processed files
         except Exception as e:
             print(f"Failed to process {filename}: {e}")
+            files_failed += 1  # Increment the count of failed files
 
 # # Generate and save a word cloud for all accumulated text
 # output_path = os.path.join(output_dir, "combined_wordcloud.png")
@@ -85,6 +92,17 @@ with open(output_csv_path, 'w', newline='', encoding='utf-8') as csvfile:
 # # Optionally, print the sorted word frequency list
 # for word, freq in sorted_word_freq:
 #     print(f"{word}: {freq}")
+
+# Calculate the sum of frequencies from the word_frequencies.csv file
+sum_of_frequencies = sum(freq for word, freq in sorted_word_freq)
+
+# Print the total word count and the sum of frequencies
+print(f"Total word count: {total_word_count}")
+print(f"Sum of frequencies: {sum_of_frequencies}")
+# Print the number of files processed and the number of files that failed to process
+print(f"Number of files processed: {files_processed}")
+print(f"Number of files failed to process: {files_failed}")
+
 
 # Print the processed filenames
 print("Processed files:")
