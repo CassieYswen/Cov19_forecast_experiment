@@ -5,6 +5,16 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from collections import Counter
 from docx import Document
+#remove the similar words
+import nltk
+from nltk.stem import WordNetLemmatizer
+from nltk.corpus import stopwords
+
+
+# Download the NLTK resources (you need to do this once)
+nltk.download('wordnet')
+nltk.download('stopwords')
+lemmatizer=WordNetLemmatizer()
 
 # Function to read text from a Word document
 def read_text_from_docx(file_path):
@@ -28,7 +38,10 @@ def clean_and_split_text(text):
     # Remove unwanted characters and split text into words
     cleaned_text = ''.join([char.lower() if char.isalnum() or char.isspace() else ' ' for char in text])
     words = cleaned_text.split()
-    return words
+    #lemmatize the words
+    # Lemmatize each word
+    lemmatized_words = [lemmatizer.lemmatize(word) for word in words if word not in stopwords.words('english')]
+    return lemmatized_words
 
 # Directory containing the reports
 reports_dir = "C:\\Users\\weny\\Dropbox\\__Dr.B\\reports"
@@ -82,7 +95,7 @@ for filename in os.listdir(reports_dir):
 sorted_word_freq = sorted(word_freq.items(), key=lambda item: item[1], reverse=True)
 
 # Save the sorted_word_freq to a .csv file
-output_csv_path = os.path.join(output_dir, "word_frequencies.csv")
+output_csv_path = os.path.join(output_dir, "word_frequencies_cleaned.csv")
 with open(output_csv_path, 'w', newline='', encoding='utf-8') as csvfile:
     csv_writer = csv.writer(csvfile)
     csv_writer.writerow(['Word', 'Frequency'])  # Write the header row
