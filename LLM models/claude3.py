@@ -1,34 +1,27 @@
-#import openai
+import anthropic
 import os
-import openai
-from openai import OpenAI
+import textwrap
 import pandas as pd
+import json
 
-#set api key as environment variable
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-#check if the api_key is loaded succefssfully
-#print(f"Secret key: {openai.api_key}")
-
-#openai.base_url = "https://..."
-client = OpenAI(api_key=openai.api_key)
-# Define a function to call the OpenAI GPT-4 API
-def ask_gpt(prompt, temperature):
-     completion = client.chat.completions.create(
-            #model="gpt-4-0125-preview",
-            model= "gpt-4-turbo",
-
-            messages=[
-                {"role":"system",
-                 "content":"You are an AI asistant with knowledge in epidemeology, statistics policy and USA counties. Your task is to provide reports which has policy recommendations to the public or to the policy makers based on predicted and trajectory data of COVID-19 cases in USA counties."},
-                 {
-                    "role": "user",
-                    "content": prompt
-                },
-            ],
-            temperature=temperature,  # Setting the temperature
-        )
-     return completion.choices[0].message.content
+client = anthropic.Anthropic(
+    api_key= os.environ.get("ANTHROPIC_API_KEY"),
+    
+)
+# Define a function to call the claude3 API
+def ask_claude(prompt,temperature):
+    message = client.messages.create(
+        model="claude-3-opus-20240229",
+        max_tokens=4096,
+        temperature=temperature,
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    )
+    return message.content
 
 # Example usage，read the csv file and convert it to a string,drop NAs
 df1=pd.read_csv("/Users/wenys/Downloads/examples_cov19/05_25_update.csv")
@@ -39,17 +32,6 @@ df1 = df1[df1['R'].notna()] # too large
 # Get unique FIPS representing different counties.
 unique_fips = df1['fips'].unique()
 
-# # Function to generate text for a given number of counties.
-# def generate_csv_text_for_counties(num_counties):
-#     csv_text = ""
-#     selected_fips = unique_fips[:num_counties]  # Select the first 'num_counties' FIPS codes
-#     selected_df = df1[df1['fips'].isin(selected_fips)]
-#     for _, row in selected_df.iterrows():
-#         data_type = "true data" if row['imp'] == 0 else "predicted data"
-#         csv_text += f"County with FIPS {row['fips']} on {row['date']} had a reproduction number (R) of {row['R']}, " \
-#                     f"{row['inc']} incident cases ({data_type}).\n"
-#     return csv_text
-# Function to generate a concise description for a given number of counties from the dataset.
 def generate_csv_text_for_counties(num_counties):
     csv_text = "COVID-19 data for selected counties: where R is reproduction number\n"  # Initial description to set the context
     selected_fips = unique_fips[:num_counties]  # Select the first 'num_counties' FIPS codes
@@ -111,43 +93,22 @@ Instructions for report generation:
 6. Consult local and national news sources from the time of data collection to add context and depth to the analysis.
 7. Focus on recent trends and projections, and formulate policy recommendations based on the data trajectory, recent trends, and the combined effects of news, geographic location, holidays, and weekends.
 8. Ensure the report includes actionable recommendations for public health officials or policymakers.
-9. Give a state and national level view, make police recommendations based on real data and news, do not say general things.
+9. Maintain a professional and analytical tone throughout the report, akin to a high-level policy analysis document, do not say general things.
 
 The goal is to produce a detailed and actionable analysis that can aid policymakers and health officials in making informed decisions as they navigate the ongoing pandemic.
 """
-
-prompt2 = f"""
-Based on the autoregressive TIS model's analysis of COVID-19 cases in US counties, generate a comprehensive report from the summarized CSV data provided below. The report should explore the COVID-19 disease trajectory, identify trends, and offer specific policy recommendations tailored to the counties based on their case counts. Key considerations should include the rate of infection, comparisons with state and national trends, and healthcare capacity.
-
-Here is the summarized CSV data:
-```{csv_text_10}```
-
-Instructions for report generation:
-1. Match the FIPS codes with the actual counties in the U.S.
-2. Analyze the CSV data to separate actual data from forecast data, identify short-term trends, and determine cyclical patterns for long-term analysis.
-3. Include analysis pauses, taking a deep breath after every 7 time steps of data processing to ensure thoroughness and accuracy.
-4. Consider the impacts of major U.S. holidays (Christmas, Thanksgiving, New Year, Easter, 4th of July, Halloween, and Labor Day) and their relevance to the data trends.
-5. Account for the effects of weekends and school schedules on COVID-19 case numbers where applicable.
-6. Consult local and national news sources from the time of data collection to add context and depth to the analysis.
-7. Focus on recent trends and projections, and formulate policy recommendations based on the data trajectory, recent trends, and the combined effects of news, geographic location, holidays, and weekends.
-8. Ensure the report includes actionable recommendations for public health officials or policymakers.
-9. Maintain a professional and analytical tone throughout the report, akin to a high-level policy analysis document, be informative and do not say general things.
-
-The goal is to produce a detailed and actionable analysis that can aid policymakers and health officials in making informed decisions as they navigate the ongoing pandemic.
-"""
-
-
-# Getting the response
-response = ask_gpt(prompt1, temperature=0.7)
-#print response
+response = ask_claude(prompt1,temperature=0.7)
 print(response)
+
+
 # Ensure the output directory exists
-output_dir = "outputs/chatgpt"
+output_dir = "outputs/claude"
 os.makedirs(output_dir, exist_ok=True)
+#response_string = "\n".join(response) 
 
 # Save the prompt and response to the same text file
-file_path = os.path.join(output_dir, "covid_report_10county4.txt")
+file_path = os.path.join(output_dir, "covid_report_10county.txt")
 with open(file_path, "w") as text_file:
     text_file.write("Prompt:\n" + prompt1 + "\n\n")
-    text_file.write("Response:\n" + response)
+    text_file.write("Response:\n" + response[0]["text"])
 
